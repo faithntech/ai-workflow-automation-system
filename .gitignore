@@ -1,0 +1,33 @@
+# Terraform
+.terraform/
+**/.terraform/
+
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+
+# Terraform lock
+.terraform.lock.hcl
+
+# SSH Keys
+*.pem
+*.key
+ai-automation-key
+ai-automation-key.pub
+
+# Vagrant
+.vagrant/
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
