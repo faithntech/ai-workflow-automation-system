@@ -59,7 +59,7 @@ resource "aws_instance" "automation_server" {
   key_name               = aws_key_pair.ai_automation_key.key_name
   vpc_security_group_ids = [aws_security_group.automation_sg.id]
 
-  user_data = file("docker-install.sh")
+  user_data = file("${path.module}/user-data.sh")
 
   root_block_device {
     volume_size = 20
