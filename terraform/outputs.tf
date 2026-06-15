@@ -7,5 +7,5 @@ output "ssh_command" {
 }
 
 output "n8n_url" {
-    value = "http://${aws_eip.automation_eip.public_ip}:5678"
+  value = "https://${var.domain_name}"
 }

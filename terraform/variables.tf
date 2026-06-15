@@ -17,3 +17,9 @@ variable "key_name" {
 variable "my_ip" {
   type = string
 }
+
+variable "domain_name" {
+  description = "n8n domain"
+  type        = string
+  default     = "n8n.shielacloudevops.work"
+}

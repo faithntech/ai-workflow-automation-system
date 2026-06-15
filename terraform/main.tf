@@ -10,13 +10,13 @@ resource "aws_security_group" "automation_sg" {
     cidr_blocks = [var.my_ip]
   }
 
-  ingress {
-    description = "n8n"
-    from_port   = 5678
-    to_port     = 5678
-    protocol    = "tcp"
-    cidr_blocks = [var.my_ip]
-  }
+  # ingress {
+  #  description = "n8n"
+  #  from_port   = 5678
+  #  to_port     = 5678
+  #  protocol    = "tcp"
+  #  cidr_blocks = [var.my_ip]
+  #}
 
   ingress {
     description = "HTTP"
