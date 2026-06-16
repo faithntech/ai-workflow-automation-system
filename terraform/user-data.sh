@@ -161,6 +161,10 @@ services:
       - N8N_BASIC_AUTH_USER=lulu.n8n@gmail.com
       - N8N_PASS=Admin123456
 
+# n8n connection
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     volumes:
       - n8n_data:/home/node/.n8n
 
