@@ -168,8 +168,26 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
 
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+
+    restart: always
+
+    environment:
+      POSTGRES_DB: automation_db
+      POSTGRES_USER: automation_user
+      POSTGRES_PASSWORD: StrongPassword123
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 volumes:
   n8n_data:
+  postgres_data:
 EOF
 
 # ==========================================
@@ -213,6 +231,11 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
 
         proxy_buffering off;
+# fix for code error 414 OAuth authorization error, request header too large
+	client_header_buffer_size 16k; 
+	large_client_header_buffers 4 32k; 
+	proxy_buffer_size 128k; proxy_buffers 4 256k; 
+	proxy_busy_buffers_size 256k;
     }
 }
 EOF
