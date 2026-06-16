@@ -157,7 +157,8 @@ services:
       - TZ=Asia/Manila
       - N8N_PROXY_HOPS=1
       - N8N_SECURE_COOKIE=true
-      - N8N_USER=admin
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=lulu.n8n@gmail.com
       - N8N_PASS=Admin123456
 
     volumes:
