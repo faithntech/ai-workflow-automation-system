@@ -155,6 +155,10 @@ services:
       - N8N_EDITOR_BASE_URL=https://${DOMAIN}/
       - GENERIC_TIMEZONE=Asia/Manila
       - TZ=Asia/Manila
+      - N8N_PROXY_HOPS=1
+      - N8N_SECURE_COOKIE=true
+      - N8N_USER=admin
+      - N8N_PASS=Admin123456
 
     volumes:
       - n8n_data:/home/node/.n8n
