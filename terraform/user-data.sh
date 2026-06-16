@@ -118,7 +118,7 @@ docker compose version
 DOMAIN="n8n.shielacloudevops.work"
 
 # Email used for SSL certificate registration
-EMAIL="shielarosemarilao@gmail.com"
+EMAIL="lulu.n8n@gmail.com"
 
 # ==========================================
 # CREATE APPLICATION DIRECTORY
