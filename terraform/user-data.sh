@@ -232,8 +232,8 @@ server {
 
         proxy_buffering off;
 # fix for code error 414 OAuth authorization error, request header too large
-	client_header_buffer_size 16k; 
-	large_client_header_buffers 4 32k; 
+#	client_header_buffer_size 16k; 
+#	large_client_header_buffers 4 32k; 
 	proxy_buffer_size 128k; proxy_buffers 4 256k; 
 	proxy_busy_buffers_size 256k;
     }
