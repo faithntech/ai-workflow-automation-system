@@ -111,6 +111,23 @@ docker --version
 docker compose version
 
 # ==========================================
+# OLLAMA SET-UP LLM
+# ==========================================
+sudo curl -fsSL https://ollama.com/install.sh | sh
+sudo ollama pull llama3.2
+sudo ollama list
+
+echo "configuring ollama.service"
+sudo cat > /etc/systemd/system/ollama.service <<EOF
+        [Service]
+        Environment="OLLAMA_HOST=0.0.0.0:11434"
+EOF
+
+sudo systemctl daemon-reload && sudo systemctl restart ollama
+sudo ss -tulpn | grep 11434
+sudo curl http://localhost:11434/api/tags
+
+# ==========================================
 # PROJECT VARIABLES
 # ==========================================
 
@@ -204,7 +221,7 @@ docker compose up -d
 
 echo "Creating nginx configuration..."
 
-cat > /etc/nginx/sites-available/n8n <<EOF
+sudo cat > /etc/nginx/sites-available/n8n <<EOF
 server {
 
     # Listen on HTTP
@@ -241,16 +258,16 @@ server {
 EOF
 
 # Enable Nginx site
-ln -sf /etc/nginx/sites-available/n8n /etc/nginx/sites-enabled/n8n
+sudo ln -sf /etc/nginx/sites-available/n8n /etc/nginx/sites-enabled/n8n
 
 # Remove default Nginx site
-rm -f /etc/nginx/sites-enabled/default
+sudo rm -f /etc/nginx/sites-enabled/default
 
 # Validate Nginx configuration
-nginx -t
+sudo nginx -t
 
 # Reload Nginx
-systemctl reload nginx
+sudo systemctl reload nginx
 
 # ==========================================
 # INSTALL CERTBOT SSL
@@ -258,12 +275,12 @@ systemctl reload nginx
 
 echo "Installing Certbot..."
 
-apt install -y certbot python3-certbot-nginx
+sudo apt install -y certbot python3-certbot-nginx
 
 # Generate SSL certificate automatically
 echo "Generating SSL certificate..."
 
-certbot --nginx \
+sudo certbot --nginx \
   -d ${DOMAIN} \
   --non-interactive \
   --agree-tos \
@@ -271,7 +288,7 @@ certbot --nginx \
   --redirect || true
 
 # Reload Nginx after SSL installation
-systemctl reload nginx
+sudo systemctl reload nginx
 
 # ==========================================
 # DEPLOYMENT COMPLETE
