@@ -287,10 +287,28 @@ sudo certbot --nginx \
   -m ${EMAIL} \
   --redirect || true
 
+# ==========================================
+# CONFIGURE AUTOMATIC SSL RENEWAL
+# ==========================================
+
+echo "Configuring automatic SSL renewal..."
+
+# Generate a random delay (0–3600 seconds)
+SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}')
+
+# Add a cron job only if one doesn't already exist
+if ! grep -q "certbot renew" /etc/crontab; then
+  echo "0 0,12 * * * root sleep $SLEEPTIME && certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
+fi
+
+# Restart cron service
+sudo systemctl restart cron
+
 # Reload Nginx after SSL installation
 sudo systemctl reload nginx
 
-# ==========================================
+echo "SSL installation and automatic renewal configured."
+# =========================================
 # DEPLOYMENT COMPLETE
 # ==========================================
 
