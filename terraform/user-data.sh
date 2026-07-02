@@ -113,9 +113,9 @@ docker compose version
 # ==========================================
 # OLLAMA SET-UP LLM
 # ==========================================
-sudo curl -fsSL https://ollama.com/install.sh | sh
-sudo ollama pull llama3.2
-sudo ollama list
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2
+ollama list
 
 echo "configuring ollama.service"
 sudo cat > /etc/systemd/system/ollama.service <<EOF
