@@ -133,6 +133,7 @@ sudo curl http://localhost:11434/api/tags
 
 # Domain name used for n8n
 DOMAIN="n8n.shielacloudevops.work"
+DOMAIN1="pgadmin.shielacloudevops.work"
 
 # Email used for SSL certificate registration
 EMAIL="lulu.n8n@gmail.com"
@@ -201,6 +202,35 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+postgres:
+    image: postgres:16
+    container_name: postgres
+
+    restart: always
+
+    environment:
+      POSTGRES_DB: automation_db
+      POSTGRES_USER: automation_user
+      POSTGRES_PASSWORD: StrongPassword123
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: unless-stopped
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@shiela.com
+      PGADMIN_DEFAULT_PASSWORD: StrongPassword123!
+
+    ports:
+      - "127.0.0.1:8080:80"
+
+    depends_on:
+      - postgres
+
 
 volumes:
   n8n_data:
@@ -219,7 +249,7 @@ docker compose up -d
 # CREATE NGINX REVERSE PROXY
 # ==========================================
 
-echo "Creating nginx configuration..."
+echo "Creating nginx and pgadmin for postgreSQL configuration..."
 
 sudo cat > /etc/nginx/sites-available/n8n <<EOF
 server {
@@ -257,8 +287,37 @@ server {
 }
 EOF
 
-# Enable Nginx site
+sudo cat > /etc/nginx/sites-available/pgadmin <<EOF
+server {
+
+    server_name pgadmin.shielacloudevops.work;
+
+    location / {
+
+        proxy_pass http://127.0.0.1:8080;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_buffering off;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/pgadmin.shielacloudevops.work/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/pgadmin.shielacloudevops.work/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+EOF
+
+# Enable Nginx and pgadmin site
 sudo ln -sf /etc/nginx/sites-available/n8n /etc/nginx/sites-enabled/n8n
+sudo ln -sf /etc/nginx/sites-available/pgadmin /etc/nginx/sites-enabled/pgadmin
 
 # Remove default Nginx site
 sudo rm -f /etc/nginx/sites-enabled/default
@@ -281,7 +340,7 @@ sudo apt install -y certbot python3-certbot-nginx
 echo "Generating SSL certificate..."
 
 sudo certbot --nginx \
-  -d ${DOMAIN} \
+  -d ${DOMAIN} ${DOMAIN1} \
   --non-interactive \
   --agree-tos \
   -m ${EMAIL} \
@@ -318,3 +377,5 @@ echo "==================================="
 
 echo "Access n8n at:"
 echo "https://${DOMAIN}"
+echo "Access postgreSQL Dashboard at:"
+echo ""https://${DOMAIN1}"
